@@ -1,0 +1,50 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  SUPERADMIN
+  ADMIN
+  USER
+}
+
+enum EnglishLevel {
+  A1
+  A2
+  B1
+  B2
+  C1
+  C2
+}
+
+model User {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  email   String   @unique
+  name    String
+  role    Role
+
+  englishLevel EnglishLevel
+  techSkills   String
+  cvLink       String
+
+  team   Team?   @relation(fields: [teamId], references: [id])
+  teamId String? @db.ObjectId
+}
+
+model Account {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  clientName    String
+  operatorName  String
+}
+
+model Team {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  users   User[]
+}
